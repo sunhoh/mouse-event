@@ -2,26 +2,51 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+
+* {
+  box-sizing: border-box;
+  user-select: none;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
+html,
+body {
+  padding: 0;
+  margin: 0;
+  max-height: 100vh;
+}
+
+ol, ul, li {
+  list-style: none;
+}
+
+
+@keyframes random {
+  10% {
+    background: #4a007f;
+    box-shadow: 0 0 90px 20px rgb(223, 25, 25);
+  }
+  25% {
+    background: #008490;
+    box-shadow: 0 0 100px 40px rgb(89, 89, 221);
+  }
+  50% {
+    background: #008490;
+    box-shadow: 0 90px 20px green;
+  }
+  75% {
+    background: #929700;
+    box-shadow: 0 0 100px 40px magenta;
+  }
+  95% {
+    background: #d57936;
+    box-shadow: 0 0 90px 20px violet;
   }
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+.animation-random {
+  transition: all ease-out 2s;
+  animation: random 15s linear infinite;
 }
