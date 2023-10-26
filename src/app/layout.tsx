@@ -15,11 +15,12 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+
   return (
     <html lang="en">
       <body className={inter.className}>
         <div className="mx-auto max-w-4xl px-6 lg:max-w-6xl lg:px-8">
-          <Nav/>
+          <Nav />
           <main className='p-4 mt-10 mx-auto max-w-3xl pb-10'>
             {children}
           </main>

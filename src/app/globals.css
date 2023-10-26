@@ -22,7 +22,6 @@ ol, ul, li {
   list-style: none;
 }
 
-
 @keyframes random {
   10% {
     background: #4a007f;
