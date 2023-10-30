@@ -1,13 +1,13 @@
 'use client'
 import DragExample from '@/components/drag/DragExample';
-import DragBouceExample from '@/components/drag/DragBouceExample';
+import DragBoundaryExample from '@/components/drag/DragBoundaryExample';
 
 export default function Page() {
 
   return (
     <div>
       <DragExample />
-      <DragBouceExample />
+      {/* <DragBoundaryExample /> */}
     </div>
 
   )
