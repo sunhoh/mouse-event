@@ -1,39 +1,57 @@
 'use client'
 import { useState, useRef } from 'react'
+import  { mouseMoveBoundary } from '@/utils/drag'
 
 const DragExample = () => {
     const [position, setPosition] = useState({ x: 0, y: 0 });  
     const { x, y } = position
     
-    const [isBoundary, setIsBoundary] = useState(false)
+    const [isBoundary, setIsBoundary] = useState<string | null>(null)
     const boundaryRef = useRef<HTMLDivElement>(null);
     const boxRef = useRef<HTMLDivElement>(null);
     const [BOUNDARY_MARGIN ,setBOUNDARY_MARGIN] = useState(12)
 
 
-    const inrange = (v: number, min: number, max: number) => {
-      if (v < min) return min;
-      if (v > max) return max;
-      return v;
-    };
-
+    const dragOptionHandler = (item:string) =>{
+      setIsBoundary(item) 
+      if(item === 'Reset') return setPosition({ x:0, y:0 })
+    }
  
   return (
     <div className='py-4'>
-    <div className='mb-4'>
-        <h1 className='text-3xl font-bold'>Drag</h1>
-        <span>console screen</span>
-        <span className='ml-4'>x:{x} y:{y}</span>
+      <div className='mb-4'>
+          <div className='flex justify-between'>
+            <h1 className='text-3xl font-bold'>Drag {isBoundary !== 'Reset' ? isBoundary : ''}</h1>
+          </div>
+          <span>console screen</span>
+          <span className='ml-4'>x:{x} y:{y}</span> 
 
-        <div className="flex items-center gap-1">
-          <label htmlFor="show" className={isBoundary ? 'cursor-pointer':'cursor-pointer text-gray-400 line-through'}>boundary setting</label>
-          <input type="number" disabled={!isBoundary} className={isBoundary ? ' w-[40px]' :' w-[40px] text-gray-400 line-through' } value={BOUNDARY_MARGIN} onChange={(e) => setBOUNDARY_MARGIN(Number(e.target.value))}/>
-          <input id="show" type="checkbox" checked={isBoundary} onChange={() => setIsBoundary(!isBoundary)} className='hidden'/>
-        </div>
-    </div>
+          <ul className=' gap-3 my-4'>
+            {['Reset','Boundary', 'Resize'].map(item => (
+              <li 
+                key={item}
+                className='rounded-xl p-1 text-sm flex items-center gap-2 cursor-pointer drop-shadow-lg  active:drop-shadow-md'  
+                onClick={() => dragOptionHandler(item)}
+              >
+                <span>{item}</span>
+                {item === 'Boundary' &&
+                  <input 
+                    type="range" 
+                    disabled={isBoundary !== 'Boundary'} 
+                    className='border border-solid'
+                    value={BOUNDARY_MARGIN} 
+                    onChange={(e) => {
+                      setBOUNDARY_MARGIN(Number(e.target.value))
+                    }}
+                  />
+                }
+              </li>
+            ))}
+          </ul>          
+      </div>
     
     
-    <div ref={boundaryRef} className='h-[400px] rounded-xl bg-gray-200  overflow-hidden flex items-center justify-center'>
+      <div ref={boundaryRef} className='h-[400px] rounded-xl bg-gray-200  overflow-hidden flex items-center justify-center'>
         <div 
           className='w-24 h-24'
           style={{ transform: `translateX(${x}px) translateY(${y}px)`}}
@@ -42,32 +60,16 @@ const DragExample = () => {
             const initY = e.screenY;
 
             const mouseMoveHandler = (e:MouseEvent) => {
-              
-              
               if (boundaryRef.current && boxRef.current) {
                 const boundary = boundaryRef.current.getBoundingClientRect();
                 const box = boxRef.current.getBoundingClientRect();
-                
-                const newX = e.screenX - initX;
-                const newY = e.screenY - initY;
+                const newX = e.screenX - initX + x;
+                const newY = e.screenY - initY + y;
+                const { rangeX, rangeY } = mouseMoveBoundary(newX, newY, boundary, box, BOUNDARY_MARGIN)
 
-                isBoundary 
-                ?  setPosition({
-                    x: inrange(
-                      x + newX,
-                      Math.floor(-boundary.width / 2 + box.width / 2 + BOUNDARY_MARGIN),
-                      Math.floor(boundary.width / 2 - box.width / 2 - BOUNDARY_MARGIN),
-                    ),
-                    y: inrange(
-                      y + newY,
-                      Math.floor(-boundary.height / 2 + box.height / 2 + BOUNDARY_MARGIN),
-                      Math.floor(boundary.height / 2 - box.height / 2 - BOUNDARY_MARGIN),
-                    ),
-                  })
-                : setPosition({
-                  x :x + newX,
-                  y :y + newY
-                });
+                isBoundary === 'Boundary'
+                ? setPosition({ x: rangeX, y: rangeY })
+                : setPosition({ x :newX, y :newY });
               }
             }
 
