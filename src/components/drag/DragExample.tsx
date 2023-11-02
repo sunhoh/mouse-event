@@ -1,6 +1,6 @@
 'use client'
 import { useState, useRef } from 'react'
-import  { mouseMoveBoundary } from '@/utils/drag'
+import  { mouseMoveBoundary } from '@/utils/dragEvent'
 
 const DragExample = () => {
     const [position, setPosition] = useState({ x: 0, y: 0 });  
@@ -26,7 +26,7 @@ const DragExample = () => {
           <span>console screen</span>
           <span className='ml-4'>x:{x} y:{y}</span> 
 
-          <ul className=' gap-3 my-4'>
+          <ul className='gap-3 my-4'>
             {['Reset','Boundary', 'Resize'].map(item => (
               <li 
                 key={item}
