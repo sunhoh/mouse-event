@@ -1,91 +1,189 @@
 'use client'
-import { useState, useRef } from 'react'
-import  { mouseMoveBoundary } from '@/utils/dragEvent'
+import { useState, useRef, useEffect } from 'react'
+import  registDragEvent, { inrange } from '@/utils/dragEvent'
+import Boundary from '@/components/Boundary'
+import Box from '@/components/Box'
+
+
+const DEFAULT_W = 96;
+const DEFAULT_H = 96;
+const MIN_W = 80;
+const MIN_H = 80;
 
 const DragExample = () => {
-    const [position, setPosition] = useState({ x: 0, y: 0 });  
-    const { x, y } = position
     
-    const [isBoundary, setIsBoundary] = useState<string | null>(null)
+
     const boundaryRef = useRef<HTMLDivElement>(null);
-    const boxRef = useRef<HTMLDivElement>(null);
+    
+    const [config, setConfig] = useState({ x: 0, y: 0, w: 0, h: 0 });
+    const  { x, y, w, h } = config
+
+    const [show, setShow] = useState({
+      resize: true,
+      boundary: true
+    });
+    const [title, setTitle] = useState<string | null>(null)
     const [BOUNDARY_MARGIN ,setBOUNDARY_MARGIN] = useState(12)
 
-
     const dragOptionHandler = (item:string) =>{
-      setIsBoundary(item) 
-      if(item === 'Reset') return setPosition({ x:0, y:0 })
+      setTitle(item)
+      if(item === 'Reset') {
+        const boundary = boundaryRef.current?.getBoundingClientRect();
+        if (boundary) {
+          setShow({resize:false, boundary:false })
+          setConfig({
+            x: Math.floor(boundary.width / 2 - DEFAULT_W / 2),
+            y: Math.floor(boundary.height / 2 - DEFAULT_H / 2 ),
+            w: DEFAULT_W,
+            h: DEFAULT_H
+          });
+        }
+        
+      } 
+      if(item === 'Resize') return setShow({resize:!show.resize, boundary:false })
+      if(item === 'Boundary') return setShow({resize:false, boundary:true })
     }
- 
+
+    useEffect(() => {
+      const boundary = boundaryRef.current?.getBoundingClientRect();
+
+      if (boundary) {
+        setConfig({
+          x: Math.floor(boundary.width / 2 - DEFAULT_W / 2),
+          y: Math.floor(boundary.height / 2 - DEFAULT_H / 2 ),
+          w: DEFAULT_W,
+          h: DEFAULT_H
+        });
+      }
+    }, []);
+  
   return (
     <div className='py-4'>
       <div className='mb-4'>
           <div className='flex justify-between'>
-            <h1 className='text-3xl font-bold'>Drag {isBoundary !== 'Reset' ? isBoundary : ''}</h1>
+            <h1 className='text-3xl font-bold'>Drag {title !== 'Reset' ? title : ''}</h1>
           </div>
           <span>console screen</span>
           <span className='ml-4'>x:{x} y:{y}</span> 
 
-          <ul className='gap-3 my-4'>
-            {['Reset','Boundary', 'Resize'].map(item => (
-              <li 
-                key={item}
-                className='rounded-xl p-1 text-sm flex items-center gap-2 cursor-pointer drop-shadow-lg  active:drop-shadow-md'  
-                onClick={() => dragOptionHandler(item)}
-              >
-                <span>{item}</span>
-                {item === 'Boundary' &&
+          <div className='gap-3 my-4'>
+            {['Reset','Resize','Boundary'].map(item => {
+              return (
+              <div key={`darg-${item}`} className="flex items-center gap-1 cursor-pointer">
+                
+                <label 
+                  htmlFor={item}
+                  className='rounded-xl text-sm flex items-center gap-2 cursor-pointer drop-shadow-lg  active:drop-shadow-md' 
+                >
+                  {item}
+                </label>
+                <input id={item} type="checkbox" checked={show.resize} className={item ==='Resize' ? 'display' : 'hidden'}  onChange={() => dragOptionHandler(item)} />
+                {item ==='Boundary' && 
                   <input 
                     type="range" 
-                    disabled={isBoundary !== 'Boundary'} 
-                    className='border border-solid'
+                    disabled={!show.boundary} 
                     value={BOUNDARY_MARGIN} 
-                    onChange={(e) => {
-                      setBOUNDARY_MARGIN(Number(e.target.value))
-                    }}
+                    onChange={(e) => setBOUNDARY_MARGIN(Number(e.target.value))}
                   />
                 }
-              </li>
-            ))}
-          </ul>          
+              </div>
+              )
+            })}
+          </div>
       </div>
-    
-    
-      <div ref={boundaryRef} className='h-[400px] rounded-xl bg-gray-200  overflow-hidden flex items-center justify-center'>
+
+      <Boundary ref={boundaryRef} >
         <div 
-          className='w-24 h-24'
-          style={{ transform: `translateX(${x}px) translateY(${y}px)`}}
-          onMouseDown={(e)=>{
-            const initX = e.screenX;
-            const initY = e.screenY;
+          className="relative"
+          style={{ width: w, height: h, left: x, top: y }}
+          {...registDragEvent((deltaX, deltaY) => {
+            if (!boundaryRef.current) return  
+            const boundary = boundaryRef.current.getBoundingClientRect();
 
-            const mouseMoveHandler = (e:MouseEvent) => {
-              if (boundaryRef.current && boxRef.current) {
-                const boundary = boundaryRef.current.getBoundingClientRect();
-                const box = boxRef.current.getBoundingClientRect();
-                const newX = e.screenX - initX + x;
-                const newY = e.screenY - initY + y;
-                const { rangeX, rangeY } = mouseMoveBoundary(newX, newY, boundary, box, BOUNDARY_MARGIN)
-
-                isBoundary === 'Boundary'
-                ? setPosition({ x: rangeX, y: rangeY })
-                : setPosition({ x :newX, y :newY });
+            title === 'Reset'
+            ? setConfig((prev)=>(
+              {
+                ...prev,
+                x: x + deltaX,
+                y: y + deltaY,
               }
-            }
-
-            const mouseUpHandler = (e:MouseEvent) => {
-              console.warn('mouse Up >> ',e.screenX)
-              document.removeEventListener('mousemove',mouseMoveHandler)
-            }
-
-            document.addEventListener('mousemove',mouseMoveHandler)
-            document.addEventListener('mouseup',mouseUpHandler,{ once:true })
-          }}
-        >
-          <div ref={boxRef} className='w-full h-full rounded-xl bg-white shadow-xl ring-1 ring-gray-100 cursor-move transition-[shadow,transform] active:scale-95 active:shadow-lg' />
-        </div>
+            ))
+            : setConfig((prev)=>(
+              {
+                ...prev,
+                x: inrange(x + deltaX, BOUNDARY_MARGIN, Math.floor(boundary.width - w - BOUNDARY_MARGIN)),
+                y: inrange(y + deltaY, BOUNDARY_MARGIN, Math.floor(boundary.height - h - BOUNDARY_MARGIN)),
+              }
+            ))
+            
+          })}
         
-      </div>
+        >
+          <Box />
+          {/* 좌상단 */}
+          <div
+            className="absolute -top-1 -left-1 h-4 w-4 cursor-nw-resize"
+            style={{ backgroundColor: show.resize ? '#12121250' : 'transparent' }}
+            {...registDragEvent((deltaX, deltaY) => {
+              setConfig({
+                x: inrange(x + deltaX, BOUNDARY_MARGIN, x + w - MIN_W),
+                y: inrange(y + deltaY, BOUNDARY_MARGIN, y + h - MIN_H),
+                w: inrange(w - deltaX, MIN_W, x + w - BOUNDARY_MARGIN),
+                h: inrange(h - deltaY, MIN_H, y + h - BOUNDARY_MARGIN),
+              });
+            }, true)}
+          />
+          {/* 우상단 */}
+          <div
+            className="absolute -top-1 -right-1 h-4 w-4 cursor-ne-resize"
+            style={{ backgroundColor: show.resize ? '#12121250' : 'transparent' }}
+            {...registDragEvent((deltaX, deltaY) => {
+              if (!boundaryRef.current) return;
+              const boundary = boundaryRef.current.getBoundingClientRect();
+
+              setConfig({
+                x,
+                y,
+                w: inrange(w + deltaX, MIN_W, boundary.width - x - BOUNDARY_MARGIN),
+                h: inrange(h + deltaY, MIN_H, boundary.height - y - BOUNDARY_MARGIN),
+              });
+            }, true)}
+          />
+          {/* 좌하단 */}
+          <div
+            className="absolute -bottom-1 -left-1 h-4 w-4 cursor-sw-resize"
+            style={{ backgroundColor: show.resize ? '#12121250' : 'transparent' }}
+            {...registDragEvent((deltaX, deltaY) => {
+              if (!boundaryRef.current) return;
+
+              const boundary = boundaryRef.current.getBoundingClientRect();
+
+              setConfig({
+                x: inrange(x + deltaX, BOUNDARY_MARGIN, x + w - MIN_W),
+                y,
+                w: inrange(w - deltaX, MIN_W, x + w - BOUNDARY_MARGIN),
+                h: inrange(h + deltaY, MIN_H, boundary.height - y - BOUNDARY_MARGIN),
+              });
+            }, true)}
+          />
+          {/* 우하단 */}
+          <div
+            className="absolute -bottom-1 -right-1 h-4 w-4 cursor-se-resize"
+            style={{ backgroundColor: show.resize ? '#12121250' : 'transparent' }}
+            {...registDragEvent((deltaX, deltaY) => {
+              if (!boundaryRef.current) return;
+              const boundary = boundaryRef.current.getBoundingClientRect();
+
+              setConfig({
+                x,
+                y,
+                w: inrange(w + deltaX, MIN_W, boundary.width - x - BOUNDARY_MARGIN),
+                h: inrange(h + deltaY, MIN_H, boundary.height - y - BOUNDARY_MARGIN),
+              });
+            }, true)}
+          />
+        </div>
+      </Boundary>
     </div>
   )
 }

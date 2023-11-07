@@ -4,26 +4,35 @@ export const inrange = (v: number, min: number, max: number) => {
     return v;
 };
 
-export const mouseMoveBoundary = ( x: number, y: number, boundary: DOMRect, box: DOMRect, margin: number )  =>{
-    return {
-        rangeX: inrange(
-            x,
-            Math.floor(-boundary.width / 2 + box.width / 2 + margin),
-            Math.floor(boundary.width / 2 - box.width / 2 - margin),
-        ),
-        rangeY: inrange(
-            y,
-            Math.floor(-boundary.height / 2 + box.height / 2 + margin),
-            Math.floor(boundary.height / 2 - box.height / 2 - margin),
-        ) 
-    }
-
-}
+const isTouchScreen =
+  typeof window !== 'undefined' && window.matchMedia('(hover: none) and (pointer: coarse)').matches;
 
 export default function registDragEvent(
   onDragChange: (deltaX: number, deltaY: number) => void,
   stopPropagation?: boolean,
 ) {
+  if (isTouchScreen) {
+    return {
+      onTouchStart: (touchEvent: React.TouchEvent<HTMLDivElement>) => {
+        if (stopPropagation) touchEvent.stopPropagation();
+
+        const touchMoveHandler = (moveEvent: TouchEvent) => {
+          if (moveEvent.cancelable) moveEvent.preventDefault();
+
+          const deltaX = moveEvent.touches[0].screenX - touchEvent.touches[0].screenX;
+          const deltaY = moveEvent.touches[0].screenY - touchEvent.touches[0].screenY;
+          onDragChange(deltaX, deltaY);
+        };
+
+        const touchEndHandler = () => {
+          document.removeEventListener('touchmove', touchMoveHandler);
+        };
+
+        document.addEventListener('touchmove', touchMoveHandler, { passive: false });
+        document.addEventListener('touchend', touchEndHandler, { once: true });
+      },
+    };
+  }
 
   return {
     onMouseDown: (clickEvent: React.MouseEvent<Element, MouseEvent>) => {
@@ -32,7 +41,6 @@ export default function registDragEvent(
       const mouseMoveHandler = (moveEvent: MouseEvent) => {
         const deltaX = moveEvent.screenX - clickEvent.screenX;
         const deltaY = moveEvent.screenY - clickEvent.screenY;
-
         onDragChange(deltaX, deltaY);
       };
 
