@@ -1,6 +1,8 @@
 'use client'
 import { useState, useRef, useEffect } from 'react'
-import  registDragEvent, { inrange } from '@/utils/dragEvent'
+import {inrange} from '@/utils'
+import  registDragEvent from '@/utils/dragEvent'
+
 import Boundary from '@/components/Boundary'
 import Box from '@/components/Box'
 
@@ -11,18 +13,16 @@ const MIN_W = 80;
 const MIN_H = 80;
 
 const DragExample = () => {
-    
-
-    const boundaryRef = useRef<HTMLDivElement>(null);
-    
     const [config, setConfig] = useState({ x: 0, y: 0, w: 0, h: 0 });
     const  { x, y, w, h } = config
 
     const [show, setShow] = useState({
-      resize: true,
-      boundary: true
+      resize: false,
+      boundary: false
     });
-    const [title, setTitle] = useState<string | null>(null)
+
+    const boundaryRef = useRef<HTMLDivElement>(null);
+    const [title, setTitle] = useState<string>('Reset')
     const [BOUNDARY_MARGIN ,setBOUNDARY_MARGIN] = useState(12)
 
     const dragOptionHandler = (item:string) =>{

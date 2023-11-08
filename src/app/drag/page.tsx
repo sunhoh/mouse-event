@@ -1,13 +1,13 @@
 'use client'
 import DragExample from '@/components/drag/DragExample';
-import DragExampleCopy from '@/components/drag/DragExampleCopy';
+import TouchExample from '@/components/drag/TouchExample';
 
 export default function Page() {
 
   return (
     <div>
       <DragExample />
-      {/* <DragExampleCopy /> */}
+      <TouchExample />
     </div>
 
   )

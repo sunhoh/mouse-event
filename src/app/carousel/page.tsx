@@ -1,8 +1,9 @@
 import React from 'react'
+import CarouselExample from '@/components/carousel/CarouselExample'
 
 const page = () => {
   return (
-    <div>carousel</div>
+    <div><CarouselExample /></div>
   )
 }
 
