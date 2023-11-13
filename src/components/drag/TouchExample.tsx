@@ -36,7 +36,6 @@ const TouchExample = () => {
                 const box = boxRef.current.getBoundingClientRect();
                 const newX = e.screenX - initX + x;
                 const newY = e.screenY - initY + y;
-
                 // setPosition({ x :newX, y :newY });
 
                 setPosition({ 

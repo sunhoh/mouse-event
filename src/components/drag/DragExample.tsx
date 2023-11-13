@@ -2,7 +2,6 @@
 import { useState, useRef, useEffect } from 'react'
 import {inrange} from '@/utils'
 import  registDragEvent from '@/utils/dragEvent'
-
 import Boundary from '@/components/Boundary'
 import Box from '@/components/Box'
 

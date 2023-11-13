@@ -6,17 +6,12 @@ import registDragEvent from '@/utils/carouselEvent';
 
 
 const imageList = [
-    'https://d3vsvt1iq0xruo.cloudfront.net/images/img-bg-sticker37.png',
-    'https://d3vsvt1iq0xruo.cloudfront.net/images/img-bg-sticker38.png',
-    'https://d3vsvt1iq0xruo.cloudfront.net/images/img-bg-sticker40.png',
-    'https://d3vsvt1iq0xruo.cloudfront.net/images/img-bg-sticker39.png',
-    'https://d3vsvt1iq0xruo.cloudfront.net/images/img-bg-sticker46.png',
-    // 'https://d3vsvt1iq0xruo.cloudfront.net/images/img-bg-sticker19.png',
-    // 'https://d3vsvt1iq0xruo.cloudfront.net/images/img-bg-sticker29.png',
-    // 'https://d3vsvt1iq0xruo.cloudfront.net/images/img-bg-sticker20.png',
-    // 'https://d3vsvt1iq0xruo.cloudfront.net/images/img-bg-sticker24.png',
+    'https://blog.kakaocdn.net/dn/dpxiAT/btqUBv6Fvpn/E8xUMncq7AVuDeOim0LrMk/img.jpg',
+    'https://blog.kakaocdn.net/dn/BGT7X/btqUzvTqi5h/flp39GdJH0GU6mo7cTbbhk/img.jpg',
+    'https://blog.kakaocdn.net/dn/bWnmfv/btqUBwqZvwA/3CiXGt3SR0TXoOveRJxV91/img.jpg',
+    'https://blog.kakaocdn.net/dn/XsLCO/btqUL8PQLwp/NZWCU2jAYKkKSXwcohBKTK/img.jpg',
+    'https://blog.kakaocdn.net/dn/bG3iVL/btqUvCZPaRL/ofIjkNWJP1mj2bOG9fie51/img.jpg',
   ];
-
 
 const SLIDER_WIDTH = 400;
 const SLIDER_HEIGHT = 400;
@@ -28,7 +23,7 @@ const CarouselExample = () => {
     <>
     {/* Viewer */}
         <div
-        className="overflow-hidden"
+        className="overflow-hidden border border-solid"
             style={{
                 width: SLIDER_WIDTH,
                 height: SLIDER_HEIGHT,
@@ -53,11 +48,10 @@ const CarouselExample = () => {
                   setTransX(0);
                 },
               })}
-              
         >
             {/* Slide */}
             {imageList.map((url, i) => (
-                <div key={i} className="flex-shrink-0 bg-gray-100">
+                <div key={i} className="flex-shrink-0">
                     <img src={url} alt="img" width={SLIDER_WIDTH} draggable={false} />
                 </div>
             ))}
