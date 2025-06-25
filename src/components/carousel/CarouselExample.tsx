@@ -6,15 +6,11 @@ import registDragEvent from '@/utils/carouselEvent';
 
 
 const imageList = [
-    'https://d3vsvt1iq0xruo.cloudfront.net/images/img-bg-sticker37.png',
-    'https://d3vsvt1iq0xruo.cloudfront.net/images/img-bg-sticker38.png',
-    'https://d3vsvt1iq0xruo.cloudfront.net/images/img-bg-sticker40.png',
-    'https://d3vsvt1iq0xruo.cloudfront.net/images/img-bg-sticker39.png',
-    'https://d3vsvt1iq0xruo.cloudfront.net/images/img-bg-sticker46.png',
-    // 'https://d3vsvt1iq0xruo.cloudfront.net/images/img-bg-sticker19.png',
-    // 'https://d3vsvt1iq0xruo.cloudfront.net/images/img-bg-sticker29.png',
-    // 'https://d3vsvt1iq0xruo.cloudfront.net/images/img-bg-sticker20.png',
-    // 'https://d3vsvt1iq0xruo.cloudfront.net/images/img-bg-sticker24.png',
+    'https://blog.kakaocdn.net/dn/dpxiAT/btqUBv6Fvpn/E8xUMncq7AVuDeOim0LrMk/img.jpg',
+    'https://blog.kakaocdn.net/dn/BGT7X/btqUzvTqi5h/flp39GdJH0GU6mo7cTbbhk/img.jpg',
+    'https://blog.kakaocdn.net/dn/bWnmfv/btqUBwqZvwA/3CiXGt3SR0TXoOveRJxV91/img.jpg',
+    'https://blog.kakaocdn.net/dn/XsLCO/btqUL8PQLwp/NZWCU2jAYKkKSXwcohBKTK/img.jpg',
+    'https://blog.kakaocdn.net/dn/bG3iVL/btqUvCZPaRL/ofIjkNWJP1mj2bOG9fie51/img.jpg',
   ];
 
 

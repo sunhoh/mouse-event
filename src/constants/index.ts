@@ -1,7 +1,8 @@
 export const PATH = {
     HOME:'/',
     DRAG: '/drag',
-    CAROUSEL:'/carousel'
+    CAROUSEL:'/carousel',
+    SCROLLING:'/scrolling'
   } as const;
   
   interface Page {
@@ -20,6 +21,10 @@ export const PATH = {
     {
       href: PATH.CAROUSEL,
       title: 'Carousel',
+    },
+    {
+      href: PATH.SCROLLING,
+      title: 'Scrolling',
     },
   ];
   
