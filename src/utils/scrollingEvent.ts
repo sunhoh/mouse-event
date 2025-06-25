@@ -69,6 +69,7 @@ export default function registHoverEvent(props: {
 
   return {
     onMouseEnter: () => {
+      console.time('🟢 Total onMouseEnter Time');
       setIsHover(true);
 
       if (!boxRef.current) return;
@@ -77,6 +78,7 @@ export default function registHoverEvent(props: {
       setBgImage(`url('${image}')`);
       setBgSize(size);
 
+      //  최적화화
       if (!ulRef.current) {
         // ex) image = https://media.tvcf.co.kr/Media/Print/0000529/A000529935968F.jpg
         const src = image.replace(/print/gi, 'sbImg').replace(/.jpg/gi, '');
@@ -88,6 +90,7 @@ export default function registHoverEvent(props: {
       }
 
       ulRef.current.style.display = 'block';
+      console.timeEnd('🟢 Total onMouseEnter Time');
     },
     onMouseMove: (e: React.MouseEvent<HTMLDivElement>) => {
       if (!boxRef.current || !ulRef.current) return;
@@ -114,8 +117,9 @@ export default function registHoverEvent(props: {
       setBgPosition('');
 
       if (ulRef.current) {
-        ulRef.current.remove();
-        ulRef.current = null;
+        ulRef.current.style.display = 'none'; // 최적화화
+        // ulRef.current.remove();
+        // ulRef.current = null;
       }
     },
   };
